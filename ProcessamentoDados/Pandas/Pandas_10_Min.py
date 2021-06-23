@@ -26,3 +26,6 @@ print(df2)
 # a dict of objects that can be converted to series-like
 
 print(df2.dtypes) # The columns of the resulting DataFrame have different dtypes.
+
+
+# Next Section: Viewing data

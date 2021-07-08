@@ -32,7 +32,7 @@ print(train.head())
 
 # Dividing x_train and y_train
 Y = train["label"]
-X = train.drop(labels = ["label"],axis = 1)
+X = train.drop(labels = ["label"], axis = 1)
 print(X.head())
 
 # On format numpy-array of images dimension 28 x 28
@@ -108,11 +108,11 @@ history = model.fit(x_train, y_train,
 fig, ax = plt.subplots(1, 2, figsize=(16,8))
 ax[0].plot(history.history['loss'], color='b', label="Training loss")
 ax[0].plot(history.history['val_loss'], color='r', label="validation loss",axes =ax[0])
-legend = ax[0].legend(loc='best', shadow=True)
+legend0 = ax[0].legend0(loc='best', shadow=True)
 
 ax[1].plot(history.history['accuracy'], color='b', label="Training accuracy")
-ax[1].plot(history.history['val_accuracy'], color='r',label="Validation accuracy")
-legend = ax[1].legend(loc='best', shadow=True)
+ax[1].plot(history.history['val_accuracy'], color='r', label="Validation accuracy")
+legend1 = ax[1].legend1(loc='best', shadow=True)
 
 # Testing
 score = model.evaluate(x_val, y_val, verbose=0)
@@ -121,8 +121,8 @@ print('Test accuracy:', score[1])
 
 # Testing a anyone data input
 print(y_train[10])
-print(model.predict(x_train[10].reshape((1,784))))
-print(model.predict_classes(x_train[10].reshape((1,784))))
+print(model.predict(x_train[10].reshape((1, 784))))
+print(model.predict_classes(x_train[10].reshape((1, 784))))
 
 # Evaluating the Model
 
@@ -134,7 +134,7 @@ def plot_confusion_matrix(cm, classes, normalize=True,
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     """
-    plt.figure(figsize=(10,10))
+    plt.figure(figsize=(10, 10))
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
@@ -150,8 +150,7 @@ def plot_confusion_matrix(cm, classes, normalize=True,
     thresh = cm.max() / 2.0
 
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, cm[i, j],
-                 horizontalalignment="center",
+        plt.text(j, i, cm[i, j], horizontalalignment="center",
                  color="white" if cm[i, j] > thresh else "black")
     plt.tight_layout()
     plt.ylabel('True label')
@@ -173,3 +172,31 @@ plot_confusion_matrix(cm, target_names, normalize=False, title='Confusion Matrix
 # Classification Report
 print('Classification Report: ')
 print(classification_report(y_test_c, y_pred, target_names=target_names))
+
+# Doing output for dataset-test
+
+# Loading dataset-test
+test = pd.read_csv("../input/digit-recognizer/test.csv")
+print("Qtd tests: {}".format(len(test)))
+
+# Put in numpy format and normalize
+x_test = test.values.reshape(len(test),784)
+x_test = x_test.astype('float32')
+x_test /= 255
+
+# Makes classification for test dataset
+y_pred = model.predict_classes(x_test)
+
+# Checking some example
+i = 0
+plt.imshow(test.values[i].reshape(28, 28), cmap=plt.cm.binary)
+plt.show()
+print('Prediction: {}'.format(y_pred[i]))
+
+# Putting in output format (Kaggle competition)
+results = pd.Series(y_pred, name="Label")
+submission = pd.concat([pd.Series(range(1, len(y_pred)+1), name = "ImageId"), results], axis = 1)
+print(submission.head(10))
+
+# Salving file
+submission.to_csv("mlp_mnist_v1.csv", index=False)

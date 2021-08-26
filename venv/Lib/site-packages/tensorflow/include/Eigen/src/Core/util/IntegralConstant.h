@@ -52,7 +52,7 @@ template<int N> class FixedInt
 {
 public:
   static const int value = N;
-  operator int() const { return value; }
+  EIGEN_CONSTEXPR operator int() const { return value; }
   FixedInt() {}
   FixedInt( VariableAndFixedInt<N> other) {
     #ifndef EIGEN_INTERNAL_DEBUGGING
@@ -184,7 +184,7 @@ template<int N, int DynamicKey> struct cleanup_index_type<std::integral_constant
 
 #ifndef EIGEN_PARSED_BY_DOXYGEN
 
-#if EIGEN_HAS_CXX14
+#if EIGEN_HAS_CXX14_VARIABLE_TEMPLATES
 template<int N>
 static const internal::FixedInt<N> fix{};
 #else
